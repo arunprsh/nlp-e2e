@@ -153,6 +153,6 @@ if __name__ == '__main__':
             tar.add(file_path, arcname=file_)
     tar.close()
     
-    s3object.meta.client.upload_file(f'{args.output_dir}/model.tar.gz', bucket, prefix + 'model.tar.gz')
+    s3.meta.client.upload_file(f'{args.output_dir}/model.tar.gz', bucket, prefix + 'model.tar.gz')
     
     tokenizer.save_pretrained(args.output_dir)
