@@ -1,6 +1,6 @@
 import subprocess
 import sys
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'sagemaker'])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-U', 'sagemaker'])
 
 from sagemaker.huggingface import HuggingFaceModel
 import sagemaker
@@ -30,7 +30,7 @@ if __name__ == '__main__':
                                          role=role, # iam role with permissions to create an Endpoint 
                                          transformers_version='4.6', # transformers version used 
                                          tensorflow_version='2.4', # pytorch version used 
-                                         py_version='py36', # python version of the DLC
+                                         py_version='py37', # python version of the DLC
                                         )
 
     huggingface_model.deploy(initial_instance_count=args.deployment_instance_count, 
