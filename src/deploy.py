@@ -36,7 +36,7 @@ if __name__ == '__main__':
     huggingface_model = HuggingFaceModel(model_data=f'{args.model_s3_path}/model.tar.gz',  # path to your trained sagemaker model 
                                          role=role, # iam role with permissions to create an Endpoint 
                                          transformers_version='4.6', # transformers version used 
-                                         tensorflow_version='2.4', # pytorch version used 
+                                         tensorflow_version='2.4', # tensorflow version used 
                                          py_version='py37', # python version of the DLC
                                         )
     
