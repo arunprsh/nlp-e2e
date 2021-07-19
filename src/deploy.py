@@ -5,6 +5,7 @@ subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-U', 'sagemaker'
 from sagemaker.huggingface import HuggingFaceModel
 import sagemaker
 import argparse
+import logging
 import boto3
 
 
