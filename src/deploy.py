@@ -17,8 +17,15 @@ if __name__ == '__main__':
     parser.add_argument('--deployment_instance_count', type=int)
     parser.add_argument('--model_s3_path', type=str)
     parser.add_argument('--endpoint_name', type=str)
-    args = parser.parse_args()
-    print(f'XXX: {args}')
+    args, _ = parser.parse_known_args()
+
+    # Set up logging
+    logger = logging.getLogger(__name__)
+
+    logging.basicConfig(level=logging.getLevelName('INFO'), 
+                        handlers=[logging.StreamHandler(sys.stdout)], 
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+                       )
     
     region = args.region
     boto3.setup_default_session(region_name=region)
@@ -32,6 +39,8 @@ if __name__ == '__main__':
                                          tensorflow_version='2.4', # pytorch version used 
                                          py_version='py37', # python version of the DLC
                                         )
-
+    
+    logger.info('Deploying model ...')
     huggingface_model.deploy(initial_instance_count=args.deployment_instance_count, 
                              instance_type=args.deployment_instance_type)
+    logger.info('Model deployment complete!')

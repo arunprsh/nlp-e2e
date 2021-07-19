@@ -28,12 +28,12 @@ def get_matching_s3_keys(bucket: str, prefix: str, suffix: str):
                 
                 
 def get_file_paths(directory):
-        file_paths = [] 
-        for root, directories, files in os.walk(directory):
-            for file_name in files:
-                file_path = os.path.join(root, file_name)
-                file_paths.append(file_path)  
-        return file_paths
+    file_paths = [] 
+    for root, directories, files in os.walk(directory):
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+            file_paths.append(file_path)  
+    return file_paths
 
 
 if __name__ == '__main__':
@@ -59,11 +59,10 @@ if __name__ == '__main__':
     # Set up logging
     logger = logging.getLogger(__name__)
 
-    logging.basicConfig(
-        level=logging.getLevelName('INFO'),
-        handlers=[logging.StreamHandler(sys.stdout)],
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
+    logging.basicConfig(level=logging.getLevelName('INFO'), 
+                        handlers=[logging.StreamHandler(sys.stdout)], 
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+                       )
 
     # Load model and tokenizer
     model = TFAutoModelForSequenceClassification.from_pretrained(args.model_name)
@@ -73,32 +72,37 @@ if __name__ == '__main__':
     train_dataset, test_dataset = load_dataset('imdb', split=['train', 'test'])
 
     # Pre-process train dataset
-    train_dataset = train_dataset.map(
-        lambda e: tokenizer(e['text'], truncation=True, padding='max_length'), batched=True
-    )
+    train_dataset = train_dataset.map(lambda e: tokenizer(e['text'], 
+                                                          truncation=True, 
+                                                          padding='max_length'), 
+                                      batched=True)
+    
     train_dataset.set_format(type='tensorflow', columns=['input_ids', 'attention_mask', 'label'])
 
     train_features = {
         x: train_dataset[x].to_tensor(default_value=0, shape=[None, tokenizer.model_max_length])
         for x in ['input_ids', 'attention_mask']
     }
-    tf_train_dataset = tf.data.Dataset.from_tensor_slices((train_features, train_dataset['label'])).batch(
-        args.train_batch_size
-    )
+    
+    tf_train_dataset = tf.data.Dataset.from_tensor_slices((train_features, 
+                                                           train_dataset['label'])
+                                                         ).batch(args.train_batch_size)
 
     # Pre-process test dataset
-    test_dataset = test_dataset.map(
-        lambda e: tokenizer(e['text'], truncation=True, padding='max_length'), batched=True
-    )
+    test_dataset = test_dataset.map(lambda e: tokenizer(e['text'], 
+                                                        truncation=True, 
+                                                        padding='max_length'), 
+                                    batched=True)
+    
     test_dataset.set_format(type='tensorflow', columns=['input_ids', 'attention_mask', 'label'])
 
     test_features = {
         x: test_dataset[x].to_tensor(default_value=0, shape=[None, tokenizer.model_max_length])
         for x in ['input_ids', 'attention_mask']
     }
-    tf_test_dataset = tf.data.Dataset.from_tensor_slices((test_features, test_dataset['label'])).batch(
-        args.eval_batch_size
-    )
+    
+    tf_test_dataset = tf.data.Dataset.from_tensor_slices((test_features, test_dataset['label'])
+                                                        ).batch(args.eval_batch_size)
 
     # Set optimizer, loss and metrics
     optimizer = tf.keras.optimizers.Adam(learning_rate=args.learning_rate)
