@@ -1,0 +1,4 @@
+Add invocation example
+Add lambda (periodic) setup instructions 
+Add lambda handler code 
+Add APIGateway setup instructions (public endpoint with restricted access)
